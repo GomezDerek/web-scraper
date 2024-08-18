@@ -1,4 +1,4 @@
-// run this file with the following command: node index.js
+// run this file with the following command: node puppeter-tutorial.js
 
 // puppeteer tutorial
 const puppeteer = require('puppeteer'); //puppeteer import

@@ -8,55 +8,50 @@ block content
   br
   
   h2 Scrape a Website
-  form(id="url-form", action="/submit", method="POST", target="_self")
+  form(id="url-form", action="/scrape", method="POST")
     label(for="url-input") Website URL
-    input(type="text", id="url-input", name="url-input", required)
+    input(type="text", id="url-input", name="url", required)
     br
-    //- button(type="submit") Submit
     input(type="submit", value="Submit")
-    p#success-message(style={visibility: "hidden"}) url submission successful!
+    p#success-message(style="visibility:hidden") URL submission successful!
 
   br
   br
   
   div#scraped-display 
-    p#scraped-content
+    p#scraped-content(style="white-space: pre-wrap;")
 
-  // handle url-form submission
   script.
     document.getElementById('url-form').addEventListener('submit', function(e) {
       e.preventDefault(); // prevents redirect after submission
-      
-      fetch('/submit', {
+
+      const formData = new URLSearchParams(new FormData(this)); // Convert FormData to URLSearchParams
+      console.log('Form Data:', Array.from(formData.entries())); // Log form data
+
+      fetch('/scrape', {
         method: 'POST',
-        body: new FormData(this),
+        body: formData,
         headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
           'Accept': 'application/json'
         }
       })
-
       .then(response => {
-        response.json();
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
       })
-      
       .then(data => {
-        console.log('Url-form submissions successful:', data);
-        // Handle the response here (e.g., display a success message)
+        console.log('URL form submission successful:', data);
         let successElement = document.getElementById('success-message');
         successElement.style.visibility = 'visible';
 
-        let url = document.getElementById('url-input').value;
-
+        // Display the scraped content
         let scrapedContentDiv = document.getElementById('scraped-content');
-        //console.log('url: ', url);
-        // TODO: scrape the url & display the html in p#scraped-content
-        // all the code is in scrape-any-url.js
-        // scrapedContentDiv.innerText = "insert scraped content here";
+        scrapedContentDiv.innerHTML = data.htmlContent; // Assuming the response contains the scraped HTML
       })
-
       .catch(error => {
-        console.error('Url-form submission error:', error);
-        // Handle any errors here
+        console.error('URL form submission error:', error);
       });
-    
     });

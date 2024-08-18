@@ -1,4 +1,5 @@
 import requests
+import os
 from bs4 import BeautifulSoup
 import openai
 import logging
@@ -8,8 +9,7 @@ import json
 logging.basicConfig(filename='scraper.log', level=logging.INFO)
 
 # Set up OpenAI API credentials
-openai.api_key = "sk-proj-q89iZ4f18GcjmzDa2AdCT3BlbkFJXLjbyregZsvZ3EbqRQj6"
-openai_client = openai.OpenAI(api_key=openai.api_key)
+openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 def get_input_fields(html_content):
     response =  openai_client.chat.completions.create(
         model="gpt-4o-mini",

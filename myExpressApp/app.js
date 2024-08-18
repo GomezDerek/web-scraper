@@ -6,8 +6,18 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var coursesRouter = require('./routes/courses'); 
 
 var app = express();
+
+const mongoose = require('mongoose');
+
+const mongoURI = 'mongodb+srv://ssyquia:Wzc5FV2*8Grg-r2@atlascluster.hgygrgf.mongodb.net/web-scraper?retryWrites=true&w=majority';
+
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -19,6 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/courses', coursesRouter);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 

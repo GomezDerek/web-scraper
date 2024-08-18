@@ -31,7 +31,6 @@ function getDomain(url) {
     console.log(await page.content());
 
     // use the document object to query
-    
 
     // automatically closes browser window
     await browser.close();

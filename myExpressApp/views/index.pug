@@ -3,3 +3,60 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+
+  br
+  br
+  
+  h2 Scrape a Website
+  form(id="url-form", action="/submit", method="POST", target="_self")
+    label(for="url-input") Website URL
+    input(type="text", id="url-input", name="url-input", required)
+    br
+    //- button(type="submit") Submit
+    input(type="submit", value="Submit")
+    p#success-message(style={visibility: "hidden"}) url submission successful!
+
+  br
+  br
+  
+  div#scraped-display 
+    p#scraped-content
+
+  // handle url-form submission
+  script.
+    document.getElementById('url-form').addEventListener('submit', function(e) {
+      e.preventDefault(); // prevents redirect after submission
+      
+      fetch('/submit', {
+        method: 'POST',
+        body: new FormData(this),
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+
+      .then(response => {
+        response.json();
+      })
+      
+      .then(data => {
+        console.log('Url-form submissions successful:', data);
+        // Handle the response here (e.g., display a success message)
+        let successElement = document.getElementById('success-message');
+        successElement.style.visibility = 'visible';
+
+        let url = document.getElementById('url-input').value;
+
+        let scrapedContentDiv = document.getElementById('scraped-content');
+        //console.log('url: ', url);
+        // TODO: scrape the url & display the html in p#scraped-content
+        // all the code is in scrape-any-url.js
+        // scrapedContentDiv.innerText = "insert scraped content here";
+      })
+
+      .catch(error => {
+        console.error('Url-form submission error:', error);
+        // Handle any errors here
+      });
+    
+    });
